@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RoomViz Pro — 3D Room Visualizer</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="app-header">
+    <div class="header-brand">
+      <span class="brand-icon">⬡</span>
+      <span class="brand-name">RoomViz <em>Pro</em></span>
+    </div>
+    <div class="header-tagline">360° Paint Visualizer</div>
+    <div class="header-actions">
+      <button id="btn-fullscreen" title="Fullscreen">⛶</button>
+      <button id="btn-screenshot" title="Screenshot">📷</button>
+    </div>
+  </header>
+
+  <!-- Canvas -->
+  <div id="canvas-wrapper">
+    <canvas id="room-canvas"></canvas>
+
+    <!-- Hover label -->
+    <div id="wall-label" class="wall-label hidden">
+      <span id="wall-label-text"></span>
+    </div>
+
+    <!-- Selection ring indicator -->
+    <div id="selection-indicator" class="selection-indicator hidden">
+      <span id="selection-text">Wall Selected</span>
+    </div>
+
+    <!-- Corner overlays (dimension labels rendered in 3D, fallback DOM) -->
+    <div id="dim-overlay"></div>
+  </div>
+
+  <!-- Control Panel -->
+  <aside class="control-panel" id="control-panel">
+    <div class="panel-drag-handle" id="panel-handle">⠿ Controls</div>
+
+    <!-- Wall Color Section -->
+    <section class="panel-section">
+      <h3 class="section-title">
+        <span class="section-icon">🎨</span> Wall Colors
+      </h3>
+      <div class="color-grid">
+
+        <div class="color-row" data-wall="front">
+          <div class="color-swatch-wrap">
+            <div class="color-swatch" id="swatch-front" style="background:#FFD700"></div>
+            <input type="color" id="color-front" value="#FFD700" title="Front Wall" />
+          </div>
+          <div class="color-info">
+            <span class="wall-name">Front Wall</span>
+            <span class="wall-desc" id="desc-front">Bright Yellow</span>
+          </div>
+          <button class="wall-select-btn" data-wall="front" title="Select wall">⊙</button>
+        </div>
+
+        <div class="color-row" data-wall="back">
+          <div class="color-swatch-wrap">
+            <div class="color-swatch" id="swatch-back" style="background:#2E8B57"></div>
+            <input type="color" id="color-back" value="#2E8B57" title="Back Wall" />
+          </div>
+          <div class="color-info">
+            <span class="wall-name">Back Wall</span>
+            <span class="wall-desc" id="desc-back">Sea Green</span>
+          </div>
+          <button class="wall-select-btn" data-wall="back" title="Select wall">⊙</button>
+        </div>
+
+        <div class="color-row" data-wall="left">
+          <div class="color-swatch-wrap">
+            <div class="color-swatch" id="swatch-left" style="background:#2E8B57"></div>
+            <input type="color" id="color-left" value="#2E8B57" title="Left Wall" />
+          </div>
+          <div class="color-info">
+            <span class="wall-name">Left Wall</span>
+            <span class="wall-desc" id="desc-left">Sea Green</span>
+          </div>
+          <button class="wall-select-btn" data-wall="left" title="Select wall">⊙</button>
+        </div>
+
+        <div class="color-row" data-wall="right">
+          <div class="color-swatch-wrap">
+            <div class="color-swatch" id="swatch-right" style="background:#D2042D"></div>
+            <input type="color" id="color-right" value="#D2042D" title="Right Wall" />
+          </div>
+          <div class="color-info">
+            <span class="wall-name">Right Wall</span>
+            <span class="wall-desc" id="desc-right">Cherry Red</span>
+          </div>
+          <button class="wall-select-btn" data-wall="right" title="Select wall">⊙</button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Room Options -->
+    <section class="panel-section">
+      <h3 class="section-title"><span class="section-icon">⚙</span> Options</h3>
+      <div class="options-grid">
+        <label class="toggle-label">
+          <input type="checkbox" id="toggle-autorotate" />
+          <span class="toggle-track"><span class="toggle-thumb"></span></span>
+          <span>Auto-Rotate</span>
+        </label>
+        <label class="toggle-label">
+          <input type="checkbox" id="toggle-shadows" checked />
+          <span class="toggle-track"><span class="toggle-thumb"></span></span>
+          <span>Shadows</span>
+        </label>
+        <label class="toggle-label">
+          <input type="checkbox" id="toggle-dimensions" checked />
+          <span class="toggle-track"><span class="toggle-thumb"></span></span>
+          <span>Dimensions</span>
+        </label>
+        <label class="toggle-label">
+          <input type="checkbox" id="toggle-wireframe" />
+          <span class="toggle-track"><span class="toggle-thumb"></span></span>
+          <span>Wireframe</span>
+        </label>
+      </div>
+    </section>
+
+    <!-- Floor Texture -->
+    <section class="panel-section">
+      <h3 class="section-title"><span class="section-icon">▦</span> Floor Style</h3>
+      <div class="floor-options">
+        <button class="floor-btn active" data-floor="wood">🪵 Wood</button>
+        <button class="floor-btn" data-floor="marble">◈ Marble</button>
+        <button class="floor-btn" data-floor="tile">▨ Tile</button>
+        <button class="floor-btn" data-floor="concrete">▪ Concrete</button>
+      </div>
+    </section>
+
+    <!-- Actions -->
+    <section class="panel-section actions-section">
+      <button id="btn-reset" class="action-btn reset-btn">↺ Reset Colors</button>
+      <button id="btn-screenshot-panel" class="action-btn screenshot-btn">📷 Screenshot</button>
+      <button id="btn-fullscreen-panel" class="action-btn fullscreen-btn">⛶ Fullscreen</button>
+    </section>
+
+    <!-- Info -->
+    <div class="panel-footer">
+      <span>Click any wall to select it</span>
+    </div>
+  </aside>
+
+  <!-- Mobile toggle -->
+  <button class="panel-toggle-mobile" id="panel-toggle-mobile">🎨</button>
+
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
