@@ -33,7 +33,7 @@ html, body {
 
 /* ─── Header ────────────────────────────────────────────────────── */
 .app-header {
-  position: fixed;
+  position: sticky;
   top: 0; left: 0; right: 0;
   height: var(--header-h);
   z-index: 100;
